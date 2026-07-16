@@ -3,7 +3,7 @@
 
 struct Stack
 {
-    int *arr;      // Dynamic Array
+    int *arr;      
     int top;
     int size;
 };

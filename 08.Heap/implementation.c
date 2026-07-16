@@ -1,26 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct
+struct MaxHeap
 {
     int *arr;
     int size;
-    int capacity;
-} Heap;
+    int totalSize;
+};
 
-//------------------------Create Heap------------------------
-Heap* createHeap(int capacity)
+// Initialize Heap
+void initHeap(struct MaxHeap *h, int n)
 {
-    Heap *heap = (Heap*)malloc(sizeof(Heap));
-
-    heap->arr = (int*)malloc(sizeof(int) * capacity);
-    heap->size = 0;
-    heap->capacity = capacity;
-
-    return heap;
+    h->arr = (int *)malloc(n * sizeof(int));
+    h->size = 0;
+    h->totalSize = n;
 }
 
-//------------------------Swap------------------------
+// Swap two numbers
 void swap(int *a, int *b)
 {
     int temp = *a;
@@ -28,286 +24,111 @@ void swap(int *a, int *b)
     *b = temp;
 }
 
-//------------------------Resize------------------------
-void resizeHeap(Heap *heap)
+// Insert into Heap
+void insert(struct MaxHeap *h, int value)
 {
-    heap->capacity *= 2;
-    heap->arr = (int*)realloc(heap->arr,
-                              heap->capacity * sizeof(int));
-}
-
-//------------------------Heapify Up------------------------
-void heapifyUp(Heap *heap, int index)
-{
-    while(index > 0)
+    if (h->size == h->totalSize)
     {
-        int parent = (index - 1) / 2;
-
-        if(heap->arr[parent] < heap->arr[index])
-        {
-            swap(&heap->arr[parent], &heap->arr[index]);
-            index = parent;
-        }
-        else
-            break;
-    }
-}
-
-//------------------------Heapify Down------------------------
-void heapifyDown(Heap *heap, int index)
-{
-    while(1)
-    {
-        int left = 2 * index + 1;
-        int right = 2 * index + 2;
-        int largest = index;
-
-        if(left < heap->size &&
-           heap->arr[left] > heap->arr[largest])
-            largest = left;
-
-        if(right < heap->size &&
-           heap->arr[right] > heap->arr[largest])
-            largest = right;
-
-        if(largest != index)
-        {
-            swap(&heap->arr[index], &heap->arr[largest]);
-            index = largest;
-        }
-        else
-            break;
-    }
-}
-
-//------------------------Insert------------------------
-void insert(Heap *heap, int value)
-{
-    if(heap->size == heap->capacity)
-        resizeHeap(heap);
-
-    heap->arr[heap->size] = value;
-
-    heapifyUp(heap, heap->size);
-
-    heap->size++;
-}
-
-//------------------------Peek------------------------
-int peek(Heap *heap)
-{
-    if(heap->size == 0)
-        return -1;
-
-    return heap->arr[0];
-}
-
-//------------------------Extract Max------------------------
-int extractMax(Heap *heap)
-{
-    if(heap->size == 0)
-        return -1;
-
-    int root = heap->arr[0];
-
-    heap->arr[0] = heap->arr[heap->size - 1];
-
-    heap->size--;
-
-    heapifyDown(heap, 0);
-
-    return root;
-}
-
-//------------------------Delete Root------------------------
-void deleteRoot(Heap *heap)
-{
-    if(heap->size == 0)
-    {
-        printf("Heap Empty\n");
+        printf("Heap Overflow\n");
         return;
     }
 
-    printf("Deleted : %d\n", extractMax(heap));
-}
+    h->arr[h->size] = value;
+    int index = h->size;
+    h->size++;
 
-//------------------------Search------------------------
-int search(Heap *heap, int value)
-{
-    for(int i = 0; i < heap->size; i++)
+    // Move upward
+    while (index > 0 && h->arr[(index - 1) / 2] < h->arr[index])
     {
-        if(heap->arr[i] == value)
-            return i;
+        swap(&h->arr[(index - 1) / 2], &h->arr[index]);
+        index = (index - 1) / 2;
     }
 
-    return -1;
+    printf("%d inserted into the heap\n", value);
 }
 
-//------------------------Increase Key------------------------
-void increaseKey(Heap *heap, int index, int newValue)
+// Print Heap
+void printHeap(struct MaxHeap *h)
 {
-    if(index >= heap->size)
-        return;
-
-    if(newValue < heap->arr[index])
-        return;
-
-    heap->arr[index] = newValue;
-
-    heapifyUp(heap, index);
-}
-
-//------------------------Decrease Key------------------------
-void decreaseKey(Heap *heap, int index, int newValue)
-{
-    if(index >= heap->size)
-        return;
-
-    if(newValue > heap->arr[index])
-        return;
-
-    heap->arr[index] = newValue;
-
-    heapifyDown(heap, index);
-}
-
-//------------------------Build Heap------------------------
-void buildHeap(Heap *heap, int arr[], int n)
-{
-    while(heap->capacity < n)
-        resizeHeap(heap);
-
-    heap->size = n;
-
-    for(int i = 0; i < n; i++)
-        heap->arr[i] = arr[i];
-
-    for(int i = n/2 - 1; i >= 0; i--)
-        heapifyDown(heap, i);
-}
-
-//------------------------Print------------------------
-void printHeap(Heap *heap)
-{
-    if(heap->size == 0)
+    for (int i = 0; i < h->size; i++)
     {
-        printf("Heap Empty\n");
-        return;
+        printf("%d ", h->arr[i]);
     }
-
-    printf("\nHeap : ");
-
-    for(int i = 0; i < heap->size; i++)
-        printf("%d ", heap->arr[i]);
-
     printf("\n");
 }
 
-//------------------------Heap Sort------------------------
-void heapSort(Heap *heap)
+// Heapify
+void heapify(struct MaxHeap *h, int index)
 {
-    Heap temp = *heap;
+    int largest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
 
-    temp.arr = (int*)malloc(sizeof(int) * heap->capacity);
+    if (left < h->size && h->arr[left] > h->arr[largest])
+        largest = left;
 
-    for(int i = 0; i < heap->size; i++)
-        temp.arr[i] = heap->arr[i];
+    if (right < h->size && h->arr[right] > h->arr[largest])
+        largest = right;
 
-    printf("\nSorted (Descending): ");
-
-    while(temp.size > 0)
-        printf("%d ", extractMax(&temp));
-
-    printf("\n");
-
-    free(temp.arr);
+    if (largest != index)
+    {
+        swap(&h->arr[index], &h->arr[largest]);
+        heapify(h, largest);
+    }
 }
 
-//------------------------Destroy------------------------
-void destroyHeap(Heap *heap)
+// Delete Root
+void deleteHeap(struct MaxHeap *h)
 {
-    free(heap->arr);
-    free(heap);
+    if (h->size == 0)
+    {
+        printf("Heap Underflow\n");
+        return;
+    }
+
+    printf("%d deleted from the Heap!\n", h->arr[0]);
+
+    h->arr[0] = h->arr[h->size - 1];
+    h->size--;
+
+    if (h->size == 0)
+        return;
+
+    heapify(h, 0);
 }
 
-//------------------------Main------------------------
+// Free Memory
+void destroyHeap(struct MaxHeap *h)
+{
+    free(h->arr);
+    h->arr = NULL;
+}
+
 int main()
 {
-    Heap *heap = createHeap(5);
+    struct MaxHeap h1;
 
-    int choice, value, index;
+    initHeap(&h1, 6);
 
-    while(1)
-    {
-        printf("\n===== MAX HEAP =====\n");
-        printf("1.Insert\n");
-        printf("2.Delete Root\n");
-        printf("3.Peek\n");
-        printf("4.Search\n");
-        printf("5.Print\n");
-        printf("6.Increase Key\n");
-        printf("7.Decrease Key\n");
-        printf("8.Heap Sort\n");
-        printf("9.Exit\n");
+    insert(&h1, 1);
+    insert(&h1, 2);
+    insert(&h1, 3);
 
-        printf("Choice : ");
-        scanf("%d", &choice);
+    printHeap(&h1);
 
-        switch(choice)
-        {
-            case 1:
-                printf("Value : ");
-                scanf("%d", &value);
-                insert(heap, value);
-                break;
+    insert(&h1, 134);
+    insert(&h1, 142);
+    insert(&h1, 156);
 
-            case 2:
-                deleteRoot(heap);
-                break;
+    printHeap(&h1);
 
-            case 3:
-                printf("Maximum = %d\n", peek(heap));
-                break;
+    deleteHeap(&h1);
+    printHeap(&h1);
 
-            case 4:
-                printf("Value : ");
-                scanf("%d", &value);
+    deleteHeap(&h1);
+    printHeap(&h1);
 
-                index = search(heap, value);
+    destroyHeap(&h1);
 
-                if(index == -1)
-                    printf("Not Found\n");
-                else
-                    printf("Found at Index %d\n", index);
-
-                break;
-
-            case 5:
-                printHeap(heap);
-                break;
-
-            case 6:
-                printf("Index NewValue : ");
-                scanf("%d%d", &index, &value);
-                increaseKey(heap, index, value);
-                break;
-
-            case 7:
-                printf("Index NewValue : ");
-                scanf("%d%d", &index, &value);
-                decreaseKey(heap, index, value);
-                break;
-
-            case 8:
-                heapSort(heap);
-                break;
-
-            case 9:
-                destroyHeap(heap);
-                return 0;
-
-            default:
-                printf("Invalid Choice\n");
-        }
-    }
+    return 0;
 }
