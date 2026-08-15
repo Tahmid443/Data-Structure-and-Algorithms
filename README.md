@@ -1,21 +1,21 @@
-# 🚀 Data Structures & Algorithms
+#  Data Structures & Algorithms
 
-Welcome to my **Data Structures & Algorithms (DSA)** repository! 👋
+Welcome to my **Data Structures & Algorithms (DSA)** repository! 
 
 This repository contains my complete journey of learning Data Structures and Algorithms through:
 
-- 📚 College coursework
-- 📝 Homework assignments
-- 💻 Practice problems
-- 🧩 Coding exercises
-- 🎯 Personal implementations
-- 🚀 Future DSA projects and notes
+- 1. College coursework
+- 2. Homework assignments
+- 3. Practice problems
+- 4. Coding exercises
+- 5. Personal implementations
+- 6. Future DSA projects and notes
 
 My goal is to build a well-organized collection of DSA concepts, algorithms, and solutions while continuously improving my problem-solving skills.
 
 ---
 
-# 📂 Repository Structure
+#  Repository Structure
 
 ```
 DSA/
@@ -38,14 +38,13 @@ DSA/
 ├── College Homework/
 ├── Practice Problems/
 ├── Notes/
-└── Miscellaneous/
 ```
 
 > The structure will continue to evolve as I learn more topics.
 
 ---
 
-# 📌 Contents
+#  Contents
 
 This repository may include:
 
@@ -62,7 +61,7 @@ This repository may include:
 
 ---
 
-# 💻 Languages Used
+#  Languages Used
 
 - C
 - C++
@@ -70,7 +69,7 @@ This repository may include:
 
 ---
 
-# 🎯 Purpose
+#  Purpose
 
 The purpose of this repository is to:
 
